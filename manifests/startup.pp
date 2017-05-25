@@ -16,6 +16,7 @@ define zabbix::startup (
   $agent_configfile_path  = undef,
   $server_configfile_path = undef,
   $database_type          = undef,
+  $manage_database        = undef,
   ) {
   case $title {
     /agent/: {
@@ -29,6 +30,9 @@ define zabbix::startup (
       }
       unless $database_type {
         fail('you have to provide a database_type param')
+      }
+      unless $manage_database != undef {
+        fail('you have to provide a manage_database param')
       }
     }
     default: {

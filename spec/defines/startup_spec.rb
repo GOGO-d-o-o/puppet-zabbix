@@ -108,7 +108,8 @@ describe 'zabbix::startup', type: :define do
             let :params do
               {
                 server_configfile_path: '/something',
-                database_type: 'mysql'
+                database_type: 'mysql',
+                manage_database: true
               }
             end
             if osfamily == 'Debian'
@@ -156,7 +157,8 @@ describe 'zabbix::startup', type: :define do
             {
               server_configfile_path: '/something',
               pidfile: '/somethingelse',
-              database_type: 'mysql'
+              database_type: 'mysql',
+              manage_database: true
             }
           end
           it { is_expected.to contain_class('systemd') }
@@ -169,17 +171,18 @@ describe 'zabbix::startup', type: :define do
           end
           it { is_expected.to contain_file('/etc/systemd/system/zabbix-server.service').with_content(%r{ExecStart=/usr/sbin/zabbix_server -c /something}) }
           it { is_expected.to contain_file('/etc/systemd/system/zabbix-server.service').with_content(%r{PIDFile=/somethingelse}) }
-          it { is_expected.to contain_file('/etc/systemd/system/zabbix-server.service').with_content(%r{After=syslog.target network.target mysqld.service}) }
+          it { is_expected.to contain_file('/etc/systemd/system/zabbix-server.service').with_content(%r{After=mysqld.service}) }
 
           context 'and works on postgres' do
             let :params do
               {
                 server_configfile_path: '/something',
                 pidfile: '/somethingelse',
-                database_type: 'postgres'
+                database_type: 'postgresql',
+                manage_database: true
               }
             end
-            it { is_expected.to contain_file('/etc/systemd/system/zabbix-server.service').with_content(%r{After=syslog.target network.target postgresql.service}) }
+            it { is_expected.to contain_file('/etc/systemd/system/zabbix-server.service').with_content(%r{After=postgresql.service}) }
           end
         end
 

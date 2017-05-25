@@ -439,6 +439,7 @@ class zabbix::server (
     pidfile                => $pidfile,
     database_type          => $database_type,
     server_configfile_path => $server_configfile_path,
+    manage_database        => $manage_database,
     require                => Package["zabbix-server-${db}"],
   }
 
